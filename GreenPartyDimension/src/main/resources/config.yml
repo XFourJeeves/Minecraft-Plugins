@@ -358,3 +358,23 @@ progression:
   composter-count-tracking: true
 
 # ──────────────────────────────────────────────────────────────────────────────
+
+# ─── Phase 5: Autonomous Routine Scheduling ──────────────────────────────────
+# RoutineScheduler fires a weighted random routine every `auto-routine-interval-ticks` ticks.
+# Set auto-routine-enabled: false to disable all autonomous triggering.
+auto-routine-enabled: true
+
+# How often to roll for a routine trigger (in ticks).
+# 36000 ticks = 30 in-game minutes (1200 ticks/min * 30 = 36000).
+# Lower values = more frequent checks. Minimum recommended: 6000 (5 min).
+auto-routine-interval-ticks: 36000
+
+# Relative weights for each auto-scheduled routine.
+# Higher weight = more likely to be chosen when the scheduler fires.
+# Set a routine weight to 0 (or remove it) to exclude it from auto-scheduling.
+# An implicit "idle" slot of equal weight to the total prevents constant triggering.
+auto-routine-weights:
+  council_session: 10            # ~30% of non-idle cycles  (~21.7% overall)
+  site_inspection_tree_farm: 8   # ~20% of non-idle cycles  (~17.4% overall)
+  heated_debate: 5               # ~15% of non-idle cycles  (~10.9% overall)
+# ──────────────────────────────────────────────────────────────────────────────

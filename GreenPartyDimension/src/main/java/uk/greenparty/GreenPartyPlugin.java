@@ -12,6 +12,7 @@ import uk.greenparty.managers.NPCScheduleManager;
 import uk.greenparty.routines.LocationRegistry;
 import uk.greenparty.routines.RoutineCommand;
 import uk.greenparty.routines.RoutineManager;
+import uk.greenparty.routines.RoutineScheduler;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -66,6 +67,7 @@ public class GreenPartyPlugin extends JavaPlugin {
     // ─── Phase 5 Managers ─────────────────────────────────────────────────────
     private LocationRegistry locationRegistry;
     private RoutineManager routineManager;
+    private RoutineScheduler routineScheduler;
 
     // ─── Phase 4 Managers ─────────────────────────────────────────────────────
     private StructureManager structureManager;
@@ -138,7 +140,8 @@ public class GreenPartyPlugin extends JavaPlugin {
         this.locationRegistry = new LocationRegistry();
         this.locationRegistry.setLogger(getLogger());
 
-        this.routineManager = new RoutineManager(this, locationRegistry);
+        this.routineManager   = new RoutineManager(this, locationRegistry);
+        this.routineScheduler = new RoutineScheduler(this);
 
         // ─── Phase 4 managers ─────────────────────────────────────────────────
         this.cosmeticsManager    = new CosmeticsManager(this);
@@ -231,6 +234,9 @@ public class GreenPartyPlugin extends JavaPlugin {
                 Bukkit.getScheduler().runTaskLater(this, () -> {
                     registerLightShowLocations(verdantWorld);
                     registerAllRoutineLocations(verdantWorld);
+
+                    // Phase 5: start autonomous routine scheduling once locations are ready
+                    routineScheduler.startAutoScheduling();
                 }, 180L);
             }
             environmentEffects.startAll();
@@ -274,6 +280,7 @@ public class GreenPartyPlugin extends JavaPlugin {
         if (violationManager != null)    violationManager.cancelTasks();
         if (debateManager != null)       debateManager.cancelAll();
         if (npcScheduleManager != null)  npcScheduleManager.cancelAll();
+        if (routineScheduler != null)    routineScheduler.stopAutoScheduling();
         if (routineManager != null)      routineManager.cancelAll();
         if (environmentEffects != null)  environmentEffects.stopAll();
         if (cosmeticsManager != null)    cosmeticsManager.cancelAll();
@@ -382,6 +389,7 @@ public class GreenPartyPlugin extends JavaPlugin {
     public ProgressionManager getProgressionManager()   { return progressionManager; }
 
     public RoutineManager getRoutineManager()           { return routineManager; }
+    public RoutineScheduler getRoutineScheduler()       { return routineScheduler; }
     public LocationRegistry getLocationRegistry()       { return locationRegistry; }
 
     // ─── Helpers ──────────────────────────────────────────────────────────────
